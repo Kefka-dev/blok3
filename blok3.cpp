@@ -170,6 +170,8 @@ int main()
         return 1;
     }
     
+    HANDLE hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 
 

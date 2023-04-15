@@ -124,7 +124,11 @@ int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
 
 int main()
 {
-    printf("Hello world");
+    
+    int err;
+
+    struct addrinfo* result = NULL, * ptr = NULL;     //struktura pre pracu s adresami
+    struct addrinfo hints;
     return 0;
 }
 

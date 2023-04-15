@@ -147,6 +147,12 @@ int main()
     {
         return 1;
     }
+    
+
+
+
+    closesocket(ConnectSocket);
+    WSACleanup();
     return 0;
 }
 

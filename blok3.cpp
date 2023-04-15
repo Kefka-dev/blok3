@@ -105,7 +105,8 @@ int sendString(char *sendBuffer, SOCKET *p_ConnectSocket)
 int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
 {
     int iResult;
-
+    //pointer for end of string
+    char* p;
     iResult = recv(*p_ConnectSocket, recvBuff, recvBuffLen, 0);
 
     if (iResult > 0)
@@ -121,6 +122,9 @@ int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
         printf("recv failed with error: %d\n", WSAGetLastError());
         return 1;
     }
+
+    p = strchr(recvBuff, '\n');
+    *p = '\0';
 
     return 0;
 }

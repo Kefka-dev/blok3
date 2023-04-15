@@ -40,6 +40,48 @@ int initialSettings(struct addrinfo **result, struct addrinfo **ptr, struct addr
 
     return 0;
 }
+
+int connectToServer(SOCKET *p_ConnectSocket, struct addrinfo **p_result, struct addrinfo **p_ptr)
+{
+    int iResult;
+    *p_ptr = *p_result;
+
+    *p_ConnectSocket = socket((*p_ptr)->ai_family, (*p_ptr)->ai_socktype, (*p_ptr)->ai_protocol);
+
+    if (*p_ConnectSocket == INVALID_SOCKET)
+    {
+        printf("Error at socket(): %ld\n", WSAGetLastError());
+        freeaddrinfo(*p_result);
+        WSACleanup();
+        return 1;
+    }
+    else
+    {
+        printf("Error didn't occur...\n");
+    }
+
+    // pokus o pripojenie sa
+
+    iResult = connect(*p_ConnectSocket, (*p_ptr)->ai_addr, (int)(*p_ptr)->ai_addrlen);
+    if (iResult == SOCKET_ERROR)
+    {
+        printf("Not connected to the server...\n");
+    }
+    else
+    {
+        printf("Connected to server!");
+    }
+
+    if (iResult == SOCKET_ERROR)    //osetrenie chyboveho stavu
+    {
+        closesocket(*p_ConnectSocket);
+        *p_ConnectSocket = INVALID_SOCKET;
+        WSACleanup();
+        return 1;
+    }
+
+    return 0;
+}
 int main()
 {
     printf("Hello world");

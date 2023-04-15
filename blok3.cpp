@@ -173,6 +173,7 @@ int main()
     HANDLE hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
+    SetConsoleOutputCP(CP_UTF8);
 
 
     closesocket(ConnectSocket);

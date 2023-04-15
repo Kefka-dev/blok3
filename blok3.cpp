@@ -182,7 +182,7 @@ int main()
         print(recvBuf);
 
         iResult = sendString(sendBuf, &ConnectSocket);
-
+        
         SetConsoleTextAttribute(hConsole, BLUE);
         fgets(sendBuf, recvSendBuffLen, stdin);
         //printf("string na odoslanie %s\n", sendBuf);

@@ -116,6 +116,7 @@ int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
     else if (iResult == 0)
     {
         printf("Connection closed\n");
+        return 2;
     }
     else 
     {

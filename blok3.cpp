@@ -72,7 +72,7 @@ int connectToServer(SOCKET *p_ConnectSocket, struct addrinfo **p_result, struct 
     }
     else
     {
-        printf("Connected to server!");
+        printf("Connected to server!\n");
     }
 
     if (iResult == SOCKET_ERROR)    //osetrenie chyboveho stavu

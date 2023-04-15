@@ -174,7 +174,21 @@ int main()
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     SetConsoleOutputCP(CP_UTF8);
+    int iResult;
+    do
+    {
+        iResult = recieveData(recvBuf, recvSendBuffLen, &ConnectSocket);
+        SetConsoleTextAttribute(hConsole, GREEN);
+        print(recvBuf);
 
+        iResult = sendString(sendBuf, &ConnectSocket);
+
+        SetConsoleTextAttribute(hConsole, BLUE);
+        fgets(sendBuf, recvSendBuffLen, stdin);
+        //printf("string na odoslanie %s\n", sendBuf);
+        iResult = sendString(sendBuf, &ConnectSocket);
+
+    } while (iResult == 0);
 
     closesocket(ConnectSocket);
     WSACleanup();

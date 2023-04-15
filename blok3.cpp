@@ -82,6 +82,23 @@ int connectToServer(SOCKET *p_ConnectSocket, struct addrinfo **p_result, struct 
 
     return 0;
 }
+
+int sendString(char *sendBuffer, SOCKET *p_ConnectSocket)
+{
+    int iResult;
+    iResult = send(*p_ConnectSocket, sendBuffer, (int)strlen(sendBuffer), 0);
+
+    if (iResult == SOCKET_ERROR)
+    {
+        printf("send failed: %d\n", WSAGetLastError());
+        closesocket(*p_ConnectSocket);
+        WSACleanup();
+        return 1;
+    }
+    printf("Bytes sent: %ld\n", iResult);
+    return 0;
+}
+
 int main()
 {
     printf("Hello world");

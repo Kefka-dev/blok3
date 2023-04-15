@@ -133,6 +133,20 @@ int main()
     int recvbufflen = DEFAULT_BUFLEN;
     char recvbuf[DEFAULT_BUFLEN];
 
+    err = initialSettings(&result, &ptr, &hints, "147.175.115.34", "777");
+    if (err == TRUE)
+    {
+        return 1;
+    }
+
+    //Vytvorenie socketu a pripojenie sa
+    SOCKET ConnectSocket = INVALID_SOCKET;
+
+    err = connectToServer(&ConnectSocket, &result, &ptr);
+    if (err == TRUE)
+    {
+        return 1;
+    }
     return 0;
 }
 

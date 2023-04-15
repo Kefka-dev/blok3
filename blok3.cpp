@@ -150,8 +150,10 @@ int main()
     struct addrinfo* result = NULL, * ptr = NULL;     //struktura pre pracu s adresami
     struct addrinfo hints;
 
-    int recvbufflen = DEFAULT_BUFLEN;
-    char recvbuf[DEFAULT_BUFLEN];
+    int recvSendBuffLen = DEFAULT_BUFLEN;
+    char recvBuf[DEFAULT_BUFLEN];
+    char sendBuf[DEFAULT_BUFLEN];
+    strcpy(sendBuf, "cc");
 
     err = initialSettings(&result, &ptr, &hints, "147.175.115.34", "777");
     if (err == TRUE)

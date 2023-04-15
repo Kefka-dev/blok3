@@ -99,6 +99,29 @@ int sendString(char *sendBuffer, SOCKET *p_ConnectSocket)
     return 0;
 }
 
+int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
+{
+    int iResult;
+
+    iResult = recv(*p_ConnectSocket, recvBuff, recvBuffLen, 0);
+
+    if (iResult > 0)
+    {
+        printf("Bytes received: %d\n", iResult);
+    }
+    else if (iResult == 0)
+    {
+        printf("Connection closed\n");
+    }
+    else 
+    {
+        printf("recv failed with error: %d\n", WSAGetLastError());
+        return 1;
+    }
+
+    return 0;
+}
+
 int main()
 {
     printf("Hello world");

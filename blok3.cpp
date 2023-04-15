@@ -2,6 +2,13 @@
 //
 #pragma warning(disable:4996)
 #include <stdio.h>
+#include <WinSock2.h>
+#include <WS2tcpip.h>
+#pragma comment(lib, "WS2_32.lib")
+
+#define TRUE 1
+#define FALSE 0
+#define DEFAULT_BUFLEN 4096
 
 int main()
 {

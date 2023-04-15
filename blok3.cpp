@@ -129,6 +129,10 @@ int main()
 
     struct addrinfo* result = NULL, * ptr = NULL;     //struktura pre pracu s adresami
     struct addrinfo hints;
+
+    int recvbufflen = DEFAULT_BUFLEN;
+    char recvbuf[DEFAULT_BUFLEN];
+
     return 0;
 }
 

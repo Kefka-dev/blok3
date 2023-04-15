@@ -130,6 +130,18 @@ int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
     return 0;
 }
 
+void print(const char* string) 
+{
+    int stringLen;
+    stringLen = strlen(string);
+
+    for (int i = 0; i < stringLen; i++)
+    {
+        printf("%c", string[i]);
+        Sleep(100);
+    }
+    printf("\n");
+}
 int main()
 {
     

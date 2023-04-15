@@ -10,6 +10,36 @@
 #define FALSE 0
 #define DEFAULT_BUFLEN 4096
 
+int initialSettings(struct addrinfo **result, struct addrinfo **ptr, struct addrinfo *hints, const char* ipAddress, const char* portNumber)
+{
+    //struktura na pracu s Winsock
+    WSADATA wsaData; 
+    int iResult;
+    iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+    if (iResult != 0)
+    {
+        printf("WSAStartup failed : % d\n", iResult);
+        return 1;
+    }
+
+    ZeroMemory(hints, sizeof(struct addrinfo));
+    (*hints).ai_family = AF_UNSPEC;
+    (*hints).ai_socktype = SOCK_STREAM;
+    (*hints).ai_protocol = IPPROTO_TCP;
+
+    iResult = getaddrinfo(ipAddress, portNumber, hints, result);
+    if (iResult != 0)     //kontrola, ci nenastala chyba
+    {
+        printf("getaddrinfo failed: %d\n", iResult);
+        WSACleanup();
+        return 1;
+    }
+    else
+        printf("getaddrinfo didn't fail...\n");
+
+    return 0;
+}
 int main()
 {
     printf("Hello world");

@@ -146,6 +146,40 @@ void print(const char* string)
     }
     printf("\n");
 }
+
+int codeFromId(char* idString, int *storeCodeHere)
+{
+    int sum = 0, readDigit = 0, digitToDevideAt = 5, digitToDevideAtValue = 1;
+    unsigned int idStrLen = strlen(idString);
+    for (int digit = 0; digit < (idStrLen-2); digit++)
+    {
+        if (isdigit(idString[digit]) != FALSE)
+        {
+            sscanf((idString+digit), "%1d", &readDigit);
+            sum = sum + readDigit;
+            if (digit == (digitToDevideAt-1))
+            {
+                if (readDigit != 0) 
+                {
+                    digitToDevideAtValue = readDigit;
+                }
+                else
+                {
+                    digitToDevideAtValue = 9;
+                }
+            }
+        }
+        else 
+        {
+            printf("Nie je cislo\n");
+            return 1;
+        }
+    }
+    sum = sum % digitToDevideAtValue;
+    *storeCodeHere = sum;
+    return 0;
+}
+
 int main()
 {
     

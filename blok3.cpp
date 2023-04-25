@@ -3,8 +3,12 @@
 #pragma warning(disable:4996)
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
+#include <iostream>
+#include <sstream>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
+#include <Windows.h>
 #pragma comment(lib, "WS2_32.lib")
 
 #define TRUE 1

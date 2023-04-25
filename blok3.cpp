@@ -16,6 +16,7 @@
 #define DEFAULT_BUFLEN 4096
 #define GREEN 10
 #define BLUE 9
+#define SLEEP_TIME 0
 
 int initialSettings(struct addrinfo **result, struct addrinfo **ptr, struct addrinfo *hints, const char* ipAddress, const char* portNumber)
 {
@@ -90,7 +91,7 @@ int connectToServer(SOCKET *p_ConnectSocket, struct addrinfo **p_result, struct 
     return 0;
 }
 
-int sendString(char *sendBuffer, SOCKET *p_ConnectSocket)
+int sendString(const char *sendBuffer, SOCKET *p_ConnectSocket)
 {
     int iResult;
     iResult = send(*p_ConnectSocket, sendBuffer, (int)strlen(sendBuffer), 0);
@@ -136,13 +137,13 @@ int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
 
 void print(const char* string) 
 {
-    int stringLen;
+    unsigned int stringLen;
     stringLen = strlen(string);
 
     for (int i = 0; i < stringLen; i++)
     {
         printf("%c", string[i]);
-        Sleep(100);
+        Sleep(SLEEP_TIME);
     }
     printf("\n");
 }
@@ -212,19 +213,17 @@ int main()
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     SetConsoleOutputCP(CP_UTF8);
-    int iResult;
+    int iResult, messageCount = 0, idCalculatedCode;
+    iResult = sendString(sendBuf, &ConnectSocket);
     do
     {
         iResult = recieveData(recvBuf, recvSendBuffLen, &ConnectSocket);
         SetConsoleTextAttribute(hConsole, GREEN);
         print(recvBuf);
 
-        iResult = sendString(sendBuf, &ConnectSocket);
         
         SetConsoleTextAttribute(hConsole, BLUE);
         fgets(sendBuf, recvSendBuffLen, stdin);
-        //printf("string na odoslanie %s\n", sendBuf);
-        iResult = sendString(sendBuf, &ConnectSocket);
         
         if (messageCount == 0)
         {

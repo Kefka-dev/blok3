@@ -225,7 +225,25 @@ int main()
         fgets(sendBuf, recvSendBuffLen, stdin);
         //printf("string na odoslanie %s\n", sendBuf);
         iResult = sendString(sendBuf, &ConnectSocket);
+        
+        if (messageCount == 0)
+        {
+            codeFromId(sendBuf, &idCalculatedCode);
+        }
+        if (strcmp(sendBuf, "dajID\n") == 0) {
+            std::string str = std::to_string(idCalculatedCode);
 
+            strcpy(sendBuf, str.c_str());
+            strcat(sendBuf, "\n");
+            printf("%s", sendBuf);
+            sendString(sendBuf, &ConnectSocket);
+        }
+        else
+        {
+            //printf("string na odoslanie %s\n", sendBuf);
+            iResult = sendString(sendBuf, &ConnectSocket);
+        }
+        messageCount++;
     } while (iResult == 0);
 
     closesocket(ConnectSocket);

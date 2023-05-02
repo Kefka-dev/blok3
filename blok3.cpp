@@ -135,17 +135,33 @@ int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
     return 0;
 }
 
-void print(const char* string) 
+void print(const char* string, COORD* cursorPos, HANDLE* hConsole, int conWidth)
 {
     unsigned int stringLen;
+    int widthCounter = 0;
     stringLen = strlen(string);
+    SetConsoleCursorPosition(*hConsole, *cursorPos);
 
     for (int i = 0; i < stringLen; i++)
     {
+        if (widthCounter == conWidth - 61) {
+            widthCounter = 0;
+            (*cursorPos).X = 61;
+            (*cursorPos).Y++;
+            SetConsoleCursorPosition(hConsole, *cursorPos);
+        }
         printf("%c", string[i]);
+        widthCounter++;
         Sleep(SLEEP_TIME);
     }
     printf("\n");
+}
+
+int getCursorPos(HANDLE hConsole, COORD *currentPos) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    *currentPos = { csbi.dwCursorPosition.X, csbi.dwCursorPosition.Y };
+    return 0;
 }
 
 int codeFromId(char* idString, int *storeCodeHere)
@@ -183,6 +199,18 @@ int codeFromId(char* idString, int *storeCodeHere)
 
 int main()
 {
+    //test sposobu zobrazenia
+    HANDLE hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    int origWidth;
+
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    origWidth = csbi.dwSize.X;
+    printf("siroke %d, vysoke %d\n", csbi.dwSize.X, csbi.dwSize.Y);
+    COORD cursorPos;
+    //koniec testu
     
     int err;
 
@@ -209,9 +237,9 @@ int main()
         return 1;
     }
     
-    HANDLE hConsole;
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
+    /*HANDLE hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);*/
+    COORD currentPos;
     SetConsoleOutputCP(CP_UTF8);
     int iResult, messageCount = 0, idCalculatedCode;
     iResult = sendString(sendBuf, &ConnectSocket);
@@ -219,8 +247,10 @@ int main()
     {
         iResult = recieveData(recvBuf, recvSendBuffLen, &ConnectSocket);
         SetConsoleTextAttribute(hConsole, GREEN);
-        print(recvBuf);
-
+        cursorPos = { 61,0 };
+        print(recvBuf, &cursorPos, &hConsole, origWidth);
+        getCursorPos(hConsole, &currentPos);
+        printf("current x:%d y:%d", currentPos.X, currentPos.Y);
         
         SetConsoleTextAttribute(hConsole, BLUE);
         fgets(sendBuf, recvSendBuffLen, stdin);

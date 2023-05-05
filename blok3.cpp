@@ -16,7 +16,7 @@
 #define DEFAULT_BUFLEN 4096
 #define GREEN 10
 #define BLUE 9
-#define SLEEP_TIME 0
+#define MORPHEUS_SPEED 0
 
 int initialSettings(struct addrinfo **result, struct addrinfo **ptr, struct addrinfo *hints, const char* ipAddress, const char* portNumber)
 {
@@ -135,33 +135,44 @@ int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
     return 0;
 }
 
-void print(const char* string, COORD* cursorPos, HANDLE* hConsole, int conWidth)
-{
-    unsigned int stringLen;
-    int widthCounter = 0;
-    stringLen = strlen(string);
-    SetConsoleCursorPosition(*hConsole, *cursorPos);
-
-    for (int i = 0; i < stringLen; i++)
-    {
-        if (widthCounter == conWidth - 61) {
-            widthCounter = 0;
-            (*cursorPos).X = 61;
-            (*cursorPos).Y++;
-            SetConsoleCursorPosition(hConsole, *cursorPos);
-        }
-        printf("%c", string[i]);
-        widthCounter++;
-        Sleep(SLEEP_TIME);
-    }
-    printf("\n");
-}
-
 int getCursorPos(HANDLE hConsole, COORD *currentPos) {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hConsole, &csbi);
     *currentPos = { csbi.dwCursorPosition.X, csbi.dwCursorPosition.Y };
     return 0;
+}
+
+void print(const char* string, COORD* cursorPos, HANDLE* hConsole, COORD windowSize, int sleepTime)
+{
+    unsigned int stringLen;
+    int widthCounter = 0;
+    stringLen = strlen(string);
+    SetConsoleCursorPosition(*hConsole, *cursorPos);
+    COORD aktualnaPos;
+    //printf("current x:%d y:%d\n", (*cursorPos).X, (*cursorPos).Y);
+    for (int i = 0; i < stringLen; i++)
+    {
+        if (widthCounter == windowSize.X - ((windowSize.X /2)+1) ) {
+            widthCounter = 0;
+            (*cursorPos).X = (windowSize.X /2)+1;
+            (*cursorPos).Y++;
+            if ((*cursorPos).Y == (windowSize.Y)-1) {
+                printf("\n");
+                (windowSize.Y)++;
+                //printf("%d %d", (*cursorPos).X, (*cursorPos).Y);
+                SetConsoleCursorPosition(*hConsole, *cursorPos);
+            }
+            else
+            {
+                SetConsoleCursorPosition(*hConsole, *cursorPos);
+            }
+        }
+        //getCursorPos(*hConsole, &aktualnaPos);
+        printf("%c", string[i]);
+        widthCounter++;
+        Sleep(sleepTime);
+    }
+    printf("\n");
 }
 
 int codeFromId(char* idString, int *storeCodeHere)
@@ -204,11 +215,12 @@ int main()
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     CONSOLE_SCREEN_BUFFER_INFO csbi;
-    int origWidth;
+    COORD windowSize;
 
     GetConsoleScreenBufferInfo(hConsole, &csbi);
-    origWidth = csbi.dwSize.X;
-    printf("siroke %d, vysoke %d\n", csbi.dwSize.X, csbi.dwSize.Y);
+    windowSize.X = csbi.dwSize.X;
+    windowSize.Y = csbi.srWindow.Bottom - csbi.srWindow.Top+1;
+    printf("siroke %d, vysoke %d\n", csbi.dwSize.X, windowSize.Y);
     COORD cursorPos;
     //koniec testu
     
@@ -245,12 +257,15 @@ int main()
     iResult = sendString(sendBuf, &ConnectSocket);
     do
     {
+        getCursorPos(hConsole, &currentPos);
+        /*printf("current x:%d y:%d\n", currentPos.X, currentPos.Y);*/
         iResult = recieveData(recvBuf, recvSendBuffLen, &ConnectSocket);
         SetConsoleTextAttribute(hConsole, GREEN);
-        cursorPos = { 61,0 };
-        print(recvBuf, &cursorPos, &hConsole, origWidth);
-        getCursorPos(hConsole, &currentPos);
-        printf("current x:%d y:%d", currentPos.X, currentPos.Y);
+        cursorPos.X = windowSize.X /2 +1;
+        cursorPos.Y = currentPos.Y;
+        print(recvBuf, &cursorPos, &hConsole, windowSize, MORPHEUS_SPEED);
+        /*getCursorPos(hConsole, &currentPos);
+        printf("current x:%d y:%d", currentPos.X, currentPos.Y);*/
         
         SetConsoleTextAttribute(hConsole, BLUE);
         fgets(sendBuf, recvSendBuffLen, stdin);

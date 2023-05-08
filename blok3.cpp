@@ -146,32 +146,38 @@ int getCursorPos(HANDLE hConsole, COORD *currentPos) {
     return 0;
 }
 
-void print(const char* string, COORD* cursorPos, HANDLE* hConsole, COORD windowSize, int sleepTime)
+void print(const char* string,int stringLen, COORD* cursorPos, COORD *windowSize, int sleepTime)
 {
-    unsigned int stringLen;
+    //unsigned int stringLen;
     int widthCounter = 0;
-    stringLen = strlen(string);
-    SetConsoleCursorPosition(*hConsole, *cursorPos);
+    //stringLen = strlen(string);
+    //SetConsoleCursorPosition(*hConsole, *cursorPos);
+    printf(CSI"%d;%dH ", (*cursorPos).Y + 1, (*cursorPos).X);
     COORD aktualnaPos;
     //printf("current x:%d y:%d\n", (*cursorPos).X, (*cursorPos).Y);
     for (int i = 0; i < stringLen; i++)
     {
-        if (widthCounter == windowSize.X - ((windowSize.X /2)+1) ) {
-            widthCounter = 0;
-            (*cursorPos).X = (windowSize.X /2)+1;
-            (*cursorPos).Y++;
-            if ((*cursorPos).Y == (windowSize.Y)-1) {
-                printf("\n");
-                (windowSize.Y)++;
-                //printf("%d %d", (*cursorPos).X, (*cursorPos).Y);
-                SetConsoleCursorPosition(*hConsole, *cursorPos);
-            }
-            else
+        if (widthCounter == (*windowSize).X - (((*windowSize).X /2)+1) )
+        {
+            if(string[i] != ' ')
             {
-                SetConsoleCursorPosition(*hConsole, *cursorPos);
+                widthCounter = widthCounter + (*cursorPos).X;
+                while (string[i] != ' ')
+                {
+                    i--;
+                    printf(CSI"%d;%dH ", (*cursorPos).Y + 1, widthCounter);
+                    widthCounter--;
+                }
             }
+            widthCounter = 0;
+            (*cursorPos).X = ((*windowSize).X / 2) + 1;
+            (*cursorPos).Y++;
+            if ((*cursorPos).Y >= 30) {
+                printf("\n");
+            }
+            printf(CSI"%d;%dH", (*cursorPos).Y + 1, (*cursorPos).X);
         }
-        //getCursorPos(*hConsole, &aktualnaPos);
+        
         printf("%c", string[i]);
         widthCounter++;
         Sleep(sleepTime);

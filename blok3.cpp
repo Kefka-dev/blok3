@@ -218,6 +218,14 @@ int codeFromId(char* idString, int *storeCodeHere)
     return 0;
 }
 
+int xorDecipher(char* string, int stringLen, int xorNum)
+{
+    for (int i = 0; i < stringLen; i++)
+    {
+        string[i] = (string[i]) ^ xorNum;
+    }
+    return 0;
+}
 int main()
 {
     //test sposobu zobrazenia

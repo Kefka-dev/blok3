@@ -107,13 +107,13 @@ int sendString(const char *sendBuffer, SOCKET *p_ConnectSocket)
     return 0;
 }
 
-int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
+int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket, int* recievedBytes)
 {
     int iResult;
     //pointer for end of string
     char* p;
     iResult = recv(*p_ConnectSocket, recvBuff, recvBuffLen, 0);
-
+    *recievedBytes = iResult;
     if (iResult > 0)
     {
         printf("Bytes received: %d\n", iResult);
@@ -130,8 +130,12 @@ int recieveData(char* recvBuff, int recvBuffLen, SOCKET* p_ConnectSocket)
     }
 
     p = strchr(recvBuff, '\n');
-    *p = '\0';
-
+    if (p != NULL)
+    {
+        *p = '\0';
+        return 0;
+    }
+    recvBuff[recvBuffLen] = '\0';
     return 0;
 }
 

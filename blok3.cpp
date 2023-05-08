@@ -288,19 +288,27 @@ int main()
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);*/
     COORD currentPos;
     SetConsoleOutputCP(CP_UTF8);
-    int iResult, messageCount = 0, idCalculatedCode;
+    int iResult, messageCount = 0, idCalculatedCode, recievedBytes;
     iResult = sendString(sendBuf, &ConnectSocket);
     do
     {
-        getCursorPos(hConsole, &currentPos);
-        /*printf("current x:%d y:%d\n", currentPos.X, currentPos.Y);*/
-        iResult = recieveData(recvBuf, recvSendBuffLen, &ConnectSocket);
+        ///////////////////////PISE MORPHEUS//////////////////////////
+        iResult = recieveData(recvBuf, recvSendBuffLen, &ConnectSocket, &recievedBytes);
         SetConsoleTextAttribute(hConsole, GREEN);
+        getCursorPos(hConsole, &currentPos);
         cursorPos.X = windowSize.X /2 +1;
         cursorPos.Y = currentPos.Y;
-        print(recvBuf, &cursorPos, &hConsole, windowSize, MORPHEUS_SPEED);
-        /*getCursorPos(hConsole, &currentPos);
-        printf("current x:%d y:%d", currentPos.X, currentPos.Y);*/
+        if (strcmp(sendBuf, "123\n") == 0)
+        {
+            xorDecipher(recvBuf, recievedBytes, 55);
+            print(recvBuf, recievedBytes, &cursorPos, &windowSize, MORPHEUS_SPEED);
+
+        }
+        else
+        {
+            print(recvBuf, recievedBytes, &cursorPos, &windowSize, MORPHEUS_SPEED);
+        }
+        ////////////////////////////////////////////////////////////////
         
         SetConsoleTextAttribute(hConsole, BLUE);
         fgets(sendBuf, recvSendBuffLen, stdin);

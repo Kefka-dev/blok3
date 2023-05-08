@@ -317,7 +317,8 @@ int main()
         {
             codeFromId(sendBuf, &idCalculatedCode);
         }
-        if (strcmp(sendBuf, "dajID\n") == 0) {
+        if (strcmp(sendBuf, "dajID\n") == 0) 
+        {
             std::string str = std::to_string(idCalculatedCode);
 
             strcpy(sendBuf, str.c_str());

@@ -17,6 +17,8 @@
 #define GREEN 10
 #define BLUE 9
 #define MORPHEUS_SPEED 0
+//escape sequence pre posuvanie cursora
+#define CSI "\x1b[" 
 
 int initialSettings(struct addrinfo **result, struct addrinfo **ptr, struct addrinfo *hints, const char* ipAddress, const char* portNumber)
 {

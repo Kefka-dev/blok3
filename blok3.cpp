@@ -245,7 +245,7 @@ int isPrime(int cislo)
 
 int main()
 {
-    //test sposobu zobrazenia
+    
     HANDLE hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -255,10 +255,8 @@ int main()
     GetConsoleScreenBufferInfo(hConsole, &csbi);
     windowSize.X = csbi.dwSize.X;
     windowSize.Y = csbi.srWindow.Bottom - csbi.srWindow.Top+1;
-    printf("siroke %d, vysoke %d\n", csbi.dwSize.X, windowSize.Y);
     COORD cursorPos;
-    //koniec testu
-    
+
     int err;
 
     struct addrinfo* result = NULL, * ptr = NULL;     //struktura pre pracu s adresami

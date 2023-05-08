@@ -226,6 +226,23 @@ int xorDecipher(char* string, int stringLen, int xorNum)
     }
     return 0;
 }
+
+int isPrime(int cislo)
+{
+    int count = 0;
+    for (int i = 2; i <= cislo / 2; ++i) {
+        if (cislo % i == 0)
+        {
+            count++;
+            if (count != 0)
+            {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 int main()
 {
     //test sposobu zobrazenia

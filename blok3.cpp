@@ -324,7 +324,22 @@ int main()
             strcpy(sendBuf, str.c_str());
             strcat(sendBuf, "\n");
             printf("%s", sendBuf);
-            sendString(sendBuf, &ConnectSocket);
+            iResult = sendString(sendBuf, &ConnectSocket);
+        }
+        else if (strcmp(sendBuf, "lusti\n") == 0)
+        {
+            for (int i = 2, control = 0; i < recievedBytes; i++)
+            {
+                //printf("test\n");
+                if (isPrime(i) == TRUE)
+                {
+                    sendBuf[control] = recvBuf[i-1];
+                    printf("%c", sendBuf[control]);
+                    control++;
+                }
+            }
+            sendBuf[recievedBytes] = '\n';
+            iResult = sendString(sendBuf, &ConnectSocket);
         }
         else
         {

@@ -16,7 +16,7 @@
 #define DEFAULT_BUFLEN 4096
 #define GREEN 10
 #define BLUE 9
-#define MORPHEUS_SPEED 0
+#define MORPHEUS_SPEED 10
 //escape sequence pre posuvanie cursora
 #define CSI "\x1b[" 
 
@@ -245,6 +245,28 @@ int isPrime(int cislo)
     return 1;
 }
 
+int logChat(char* stringToLog, int stringLen,  FILE *logDestination, int isMorpheus)
+{
+    logDestination = fopen("chatLog.txt", "a");
+    if (isMorpheus == TRUE)
+    {
+        fputs("[Morpheus]\n", logDestination);
+    }
+    else 
+    {
+        fputs("\n[Me]\n", logDestination);
+    }
+
+    for (int i = 0; i < stringLen; i++)
+    {
+        fputc(stringToLog[i], logDestination);
+    }
+
+    fputc('\n', logDestination);
+    fclose(logDestination);
+    return 0;
+}
+
 int main()
 {
     
@@ -274,7 +296,6 @@ int main()
     {
         return 1;
     }
-
     //Vytvorenie socketu a pripojenie sa
     SOCKET ConnectSocket = INVALID_SOCKET;
 
@@ -290,6 +311,7 @@ int main()
     SetConsoleOutputCP(CP_UTF8);
     int iResult, messageCount = 0, idCalculatedCode, recievedBytes;
     iResult = sendString(sendBuf, &ConnectSocket);
+    FILE *chatLog = NULL;
     do
     {
         ///////////////////////PISE MORPHEUS//////////////////////////
@@ -302,20 +324,27 @@ int main()
         {
             xorDecipher(recvBuf, recievedBytes, 55);
             print(recvBuf, recievedBytes, &cursorPos, &windowSize, MORPHEUS_SPEED);
-
+            logChat(recvBuf, recievedBytes, chatLog, TRUE);
         }
         else
         {
             print(recvBuf, recievedBytes, &cursorPos, &windowSize, MORPHEUS_SPEED);
+            logChat(recvBuf, recievedBytes, chatLog, TRUE);
+            //fputs(recvBuf, chatLog);
         }
         ////////////////////////////////////////////////////////////////
         
         SetConsoleTextAttribute(hConsole, BLUE);
         fgets(sendBuf, recvSendBuffLen, stdin);
-        
+        //logChat(sendBuf, strlen(sendBuf), chatLog, FALSE);
+
         if (messageCount == 0)
         {
-            codeFromId(sendBuf, &idCalculatedCode);
+            messageCount++;
+            if (codeFromId(sendBuf, &idCalculatedCode) == 1)
+            {
+                messageCount = 0;
+            }
         }
         if (strcmp(sendBuf, "dajID\n") == 0) 
         {
@@ -346,7 +375,7 @@ int main()
             //printf("string na odoslanie %s\n", sendBuf);
             iResult = sendString(sendBuf, &ConnectSocket);
         }
-        messageCount++;
+        logChat(sendBuf, strlen(sendBuf), chatLog, FALSE);
     } while (iResult == 0);
 
     closesocket(ConnectSocket);
